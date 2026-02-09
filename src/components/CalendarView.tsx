@@ -25,7 +25,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ calendarId, onBack }) => {
         setCalendarConfig(config || null);
     }, [calendarId]);
 
-    const { totalDots, passedDots, title, subtitle, startDate, customDotSize, customGap } = useMemo(() => {
+    const { totalDots, passedDots, title, subtitle, startDate } = useMemo(() => {
         const now = new Date();
         const currentYear = now.getFullYear();
         const startOfYear = new Date(currentYear, 0, 1);
@@ -40,9 +40,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ calendarId, onBack }) => {
             passedDots: daysPassed,
             title: calendarConfig ? calendarConfig.name : `Year ${currentYear}`,
             subtitle: `Day ${dayNumber} of ${yearDots} (${percentage}%)`,
-            startDate: startOfYear,
-            customDotSize: 10,
-            customGap: 8
+            startDate: startOfYear
         };
     }, [calendarConfig]);
 
@@ -140,15 +138,6 @@ const CalendarView: React.FC<CalendarViewProps> = ({ calendarId, onBack }) => {
         }
     };
 
-    const handleNavigate = (newDate: Date) => {
-        const diffTime = newDate.getTime() - startDate.getTime();
-        const newIndex = Math.floor(diffTime / MILLISECONDS_PER_DAY);
-
-        setZoomOrigin(null);
-        setZoomedIndex(newIndex);
-        setFocusedDate(newDate);
-    };
-
     return (
         <div className={`calendar-view ${zoomedIndex !== null ? 'zoomed' : ''}`}>
 
@@ -185,7 +174,6 @@ const CalendarView: React.FC<CalendarViewProps> = ({ calendarId, onBack }) => {
                         setFocusedDate(null);
                         setRefreshTrigger(prev => prev + 1); // Refresh status when coming back
                     }}
-                    onNavigate={handleNavigate}
                     initialPosition={zoomOrigin || undefined}
                     isOverlay={true}
                 />
